@@ -1,22 +1,36 @@
-# JaReadme-md
+# JaReadMe-MD
 > Create README.md for your github project QQ (Qool & Quick)
 
 ![License](https://img.shields.io/badge/license-MIT-333333?style=flat-square) ![Build](https://img.shields.io/badge/build-passed-777777?style=flat-square)
 
 ## 🛠️ Built With
 
-![HTML](https://img.shields.io/badge/HTML-b6941b?style=flat-square) ![CSS](https://img.shields.io/badge/CSS-38a9ff?style=flat-square) ![JS](https://img.shields.io/badge/JS-ff4d4d?style=flat-square) 
+![HTML](https://img.shields.io/badge/HTML-E34F26?style=flat-square) ![CSS](https://img.shields.io/badge/CSS-1572B6?style=flat-square) ![JS](https://img.shields.io/badge/JS-ebe300?style=flat-square) 
+
+## 🖼️ Visual Documentation Gallery
+<div align="center" class="readme-slider">
+  <table style="border-collapse: collapse; border: none; margin: 0; width: auto;">
+    <tr>
+      <td style="padding: 8px; border: none; vertical-align: middle;">
+        <img src="https://lh3.googleusercontent.com/d/121ZjejiFSSzV1zVkpaZuiM_CsSlVhsgl" height="240" alt="Showcase" style="border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.4);"/>
+      </td>
+      <td style="padding: 8px; border: none; vertical-align: middle;">
+        <img src="https://lh3.googleusercontent.com/d/1C3M4Wixu3b5pzFaQpFzSKZbnfUnHcmkn" height="240" alt="Showcase" style="border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.4);"/>
+      </td>
+    </tr>
+  </table>
+</div>
 
 ## ⚙️ Installation
 ```bash
-No required to instal.
+# No install required
 ```
 
 ## 🚀 Usage
-
-Start Use Now in:
-[Click Here.](https://nakenx-kenx.github.io/JaReadMe-MD/)
-
+```bash
+Start use it NOW. // Click Link Below
+```
+🌐 [Reference Link](https://nakenx-kenx.github.io/JaReadMe-MD/)
 
 ## 🤝 Contributing
 Pull requests are welcome. For major changes, please open an issue first.
