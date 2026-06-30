@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JaReadme-md // Secure Manifest Protocol</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown-dark.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=JetBrains+Mono:wght@300;500;700&display=swap');
+        
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: #0b0f0e;
+            color: #87a296;
+        }
+        .analog-font { font-family: 'Courier Prime', monospace; }
+
+        .scanlines {
+            position: fixed; inset: 0; pointer-events: none;
+            background: linear-gradient(rgba(18, 24, 22, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+            background-size: 100% 4px; z-index: 100; opacity: 0.3;
+        }
+
+        .panel-bg { background-color: #0c1110; border: 1px solid #1c2622; }
+        .input-field { 
+            background-color: #070a09; border: 1px solid #23302b; 
+            color: #e2e5e4; padding: 0.5rem; font-size: 0.875rem;
+        }
+        .input-field:focus { outline: none; border-color: #41544e; box-shadow: 0 0 5px rgba(65, 84, 78, 0.3); }
+
+        .tag-chip {
+            background: #1a2421; border: 1px solid #325245;
+            color: #e2e5e4; padding: 4px 10px; border-radius: 4px;
+            display: inline-flex; align-items: center; gap: 8px; font-size: 12px;
+        }
+
+        .color-picker-wrapper {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+        .color-picker-wrapper input[type="color"] {
+            position: absolute; opacity: 0; width: 16px; height: 16px; cursor: pointer; z-index: 2;
+        }
+        .color-swatch {
+            width: 16px; height: 16px; border-radius: 50%; border: 1px solid #325245; z-index: 1; transition: transform 0.1s ease;
+        }
+        .color-picker-wrapper:hover .color-swatch {
+            transform: scale(1.15); border-color: #86efac;
+        }
+
+        .has-tooltip { position: relative; }
+        .tooltip-text {
+            visibility: hidden; position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%);
+            background-color: #141f1b; color: #86efac; border: 1px solid #325245;
+            padding: 4px 8px; font-size: 10px; white-space: nowrap; border-radius: 3px;
+            z-index: 50; opacity: 0; transition: opacity 0.15s ease; pointer-events: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+        }
+        .has-tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
+
+        .tab-btn { padding: 8px 16px; font-size: 12px; cursor: pointer; border-bottom: 2px solid transparent; transition: 0.2s; }
+        .tab-btn.active { color: #86efac; border-color: #86efac; background: rgba(134, 239, 172, 0.05); }
+
+        .preview-container {
+            background-color: #0d1117; 
+            border-radius: 6px;
+        }
+
+        .readme-slider {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding-bottom: 12px;
+        }
+        .readme-slider table { border-collapse: collapse !important; border: none !important; margin: 0 !important; width: auto !important; }
+        .readme-slider td { border: none !important; padding: 8px !important; }
+        .readme-slider img, .readme-slider video {
+            scroll-snap-align: start;
+            flex-shrink: 0;
+            max-height: 280px;
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar { width: 5px; height: 6px; }
+        ::-webkit-scrollbar-thumb { background: #1c2622; border-radius: 3px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-[#325245]">
+    <div class="scanlines"></div>
+
+    <header class="border-b border-[#1f2925] bg-[#0f1413] px-6 py-3 flex justify-between items-center z-10">
+        <div class="flex items-center space-x-4">
+            <div class="analog-font font-bold text-xl tracking-tighter text-[#e2e5e4]">JaReadme<span class="text-[#325245]">-md</span></div>
+            <div class="h-4 w-[1px] bg-[#1f2925]"></div>
+            <div class="text-[10px] uppercase tracking-widest text-[#41544e]">Terminal Revision: A-03</div>
+        </div>
+        <div class="font-mono text-[10px] text-[#41544e]" id="clock">00:00:00 UTC</div>
+    </header>
+
+    <main class="flex-1 flex flex-col lg:flex-row overflow-hidden z-10">
+        <section class="w-full lg:w-2/5 p-6 overflow-y-auto border-r border-[#1f2925] space-y-6">
+            <div class="flex justify-between items-center border-b border-[#1c2622] pb-2">
+                <h2 class="text-xs uppercase font-bold tracking-widest text-[#5c6e67]">[ Parameter Entry ]</h2>
+                <select id="out-lang" class="bg-transparent text-[10px] uppercase font-bold text-[#86efac] focus:outline-none cursor-pointer">
+                    <option value="en">Language: English</option>
+                    <option value="id">Language: Indonesia</option>
+                </select>
+            </div>
+
+            <div class="grid gap-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase mb-1 text-[#41544e] font-bold">Project Identity</label>
+                        <input type="text" id="p-name" placeholder="Name of repository" class="w-full input-field">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase mb-1 text-[#41544e] font-bold">Output Theme Template</label>
+                        <select id="p-theme" class="w-full input-field cursor-pointer font-bold text-[#86efac]">
+                            <option value="minimalist">▫️ Clean Minimalist</option>
+                            <option value="cyberpunk">⚡ Cyberpunk Hack</option>
+                            <option value="dracula">🧛 Dracula Noir</option>
+                            <option value="oceanic">🌊 Deep Oceanic</option>
+                            <option value="aurora">🌌 Nord Aurora</option>
+                            <option value="monochrome">🏴 Structural Mono</option>
+                            <option value="matrix">📟 Digital Matrix</option>
+                            <option value="sunset">🌆 Retro Sunset</option>
+                            <option value="forest">🌲 Mystic Forest</option>
+                            <option value="sakura">🌸 Soft Sakura</option>
+                            <option value="corporate">💼 Enterprise Executive</option>
+                            <option value="gotham">🦇 Gotham Shadow</option>
+                            <option value="hyperlight">✨ Hyperlight Neon</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase mb-1 text-[#41544e] font-bold">Project Brief</label>
+                    <textarea id="p-desc" rows="2" placeholder="Abstract of the system" class="w-full input-field resize-none"></textarea>
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase mb-1 text-[#41544e] font-bold">Tech Stack Tags (Press Enter / Comma)</label>
+                    <div id="tag-container" class="w-full input-field min-h-[42px] flex flex-wrap gap-2 items-center">
+                        <input type="text" id="tag-input" class="bg-transparent border-none outline-none text-sm flex-1 min-w-[60px]" placeholder="...">
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="flex justify-between items-center mb-1">
+                    <label class="block text-[10px] uppercase text-[#41544e] font-bold">Media Assets Gallery (Image/Video URL)</label>
+                    <button type="button" onclick="addRandomMedia()" class="text-[10px] text-[#86efac] hover:underline uppercase font-bold cursor-pointer">🎲 Add Random</button>
+                </div>
+                <div class="flex gap-2 mb-2">
+                    <input type="text" id="media-input" placeholder="https://example.com/asset.png (or .mp4)" class="flex-1 input-field font-mono text-xs">
+                    <button type="button" onclick="addNewMedia()" class="bg-[#1a2421] border border-[#325245] px-3 text-xs text-[#e2e5e4] hover:bg-[#23332e] active:scale-95 transition-all">Add</button>
+                </div>
+                <div id="media-list" class="space-y-1.5 max-h-[120px] overflow-y-auto pr-1">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[10px] uppercase mb-1 text-[#41544e] font-bold">License</label>
+                    <select id="p-license" class="w-full input-field">
+                        <option value="MIT">MIT</option>
+                        <option value="Apache-2.0">Apache 2.0</option>
+                        <option value="GPL-3.0">GPL 3.0</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase mb-1 text-[#41544e] font-bold">Author</label>
+                    <input type="text" id="p-author" placeholder="@operator" class="w-full input-field">
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <label class="block text-[10px] uppercase text-[#41544e] font-bold">Technical Procedures</label>
+                <textarea id="p-install" rows="2" placeholder="Installation commands" class="w-full input-field font-mono text-xs"></textarea>
+                <textarea id="p-usage" rows="2" placeholder="Execution commands" class="w-full input-field font-mono text-xs"></textarea>
+            </div>
+        </section>
+
+        <section class="w-full lg:w-3/5 flex flex-col bg-[#080b0a]">
+            <div class="flex bg-[#0f1413] border-b border-[#1f2925]">
+                <div id="tab-source" class="tab-btn active uppercase tracking-tighter analog-font">Source Code</div>
+                <div id="tab-preview" class="tab-btn uppercase tracking-tighter analog-font">GitHub Preview</div>
+                <div class="flex-1"></div>
+                <button onclick="copyCode()" class="px-4 text-[10px] text-[#86efac] uppercase hover:bg-[#1a2421] transition-all active:scale-95">Copy to Clipboard</button>
+            </div>
+
+            <div class="flex-1 p-6 overflow-y-auto">
+                <div id="view-source" class="h-full">
+                    <textarea id="output-raw" readonly class="w-full h-full bg-transparent border-none text-sm font-mono text-[#627d72] focus:outline-none resize-none" placeholder="Data stream empty..."></textarea>
+                </div>
+                <div id="view-preview" class="h-full hidden">
+                    <div id="github-render" class="preview-container markdown-body p-8 min-h-full">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="p-2 border-t border-[#1f2925] bg-[#0c1110] text-[9px] flex justify-between uppercase tracking-[0.2em] text-[#2d3a36]">
+        <span>Encrypted Workstation</span>
+        <span class="normal-case tracking-normal text-[#41544e]">Tool created by <span class="font-bold text-[#5c6e67]">Jabarra</span> (<a href="https://github.com/NaKenx-Kenx" target="_blank" class="hover:text-[#86efac] underline">NaKenx-Kenx</a>)</span>
+        <span>Manual Script Gen // No AI Training Data Used</span>
+    </footer>
+
+    <script>
+        let tags = [
+            { name: "HTML", color: "E34F26" },
+            { name: "CSS", color: "1572B6" },
+            { name: "JavaScript", color: "F7DF1E" }
+        ];
+        
+        let mediaGallery = [];
+
+        const translations = {
+            en: {
+                built: "Built With", install: "Installation", usage: "Usage",
+                contrib: "Contributing", license: "License", desc: "Description",
+                tooltip: "Click to change color", media: "Visual Documentation Gallery"
+            },
+            id: {
+                built: "Teknologi Utama", install: "Instalasi", usage: "Penggunaan",
+                contrib: "Kontribusi", license: "Lisensi", desc: "Deskripsi",
+                tooltip: "Klik untuk ubah warna", media: "Galeri Dokumentasi Visual"
+            }
+        };
+
+        const themeStyles = {
+            cyberpunk: { badge: "ff0055", build: "00ff99", prefix: "⚡", line: "═" },
+            minimalist: { badge: "333333", build: "777777", prefix: "▫️", line: "─" },
+            dracula: { badge: "bd93f9", build: "50fa7b", prefix: "🧛", line: "🩸" },
+            oceanic: { badge: "007acc", build: "00fa9a", prefix: "🌊", line: "═" },
+            aurora: { badge: "5e81ac", build: "a3be8c", prefix: "🌌", line: "─" },
+            monochrome: { badge: "000000", build: "ffffff", prefix: "🏴", line: "─" },
+            matrix: { badge: "003300", build: "00ff00", prefix: "📟", line: "═" },
+            sunset: { badge: "ff5e62", build: "ff9966", prefix: "🌆", line: "═" },
+            forest: { badge: "2b5329", build: "8fbc8f", prefix: "🌲", line: "─" },
+            sakura: { badge: "ffb7c5", build: "f4c2c2", prefix: "🌸", line: "🌸" },
+            corporate: { badge: "1e3a8a", build: "10b981", prefix: "💼", line: "─" },
+            gotham: { badge: "111827", build: "4b5563", prefix: "🦇", line: "═" },
+            hyperlight: { badge: "00ffff", build: "ff00ff", prefix: "✨", line: "═" }
+        };
+
+        function generateRandomHex() {
+            const hexChars = '0123456789ABCDEF';
+            let color = '';
+            for (let i = 0; i < 6; i++) { color += hexChars[Math.floor(Math.random() * 16)]; }
+            return color;
+        }
+
+        function addNewMedia() {
+            const input = document.getElementById('media-input');
+            const url = input.value.trim();
+            if(url) { mediaGallery.push(url); input.value = ''; renderMediaList(); }
+        }
+
+        function addRandomMedia() {
+            const keywords = ['dashboard', 'code', 'ui-design', 'terminal', 'developer'];
+            const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
+            const cacheBuster = Math.floor(Math.random() * 1000);
+            mediaGallery.push(`https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80&sig=${cacheBuster}&q=${randomKeyword}`);
+            renderMediaList();
+        }
+
+        function removeMedia(index) { mediaGallery.splice(index, 1); renderMediaList(); }
+
+        function renderMediaList() {
+            const container = document.getElementById('media-list');
+            container.innerHTML = '';
+            mediaGallery.forEach((url, index) => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center justify-between bg-[#070a09] border border-[#1f2925] px-2 py-1 text-xs rounded';
+                const displayUrl = url.length > 35 ? url.substring(0, 35) + '...' : url;
+                const isVideo = url.match(/\.(mp4|webm|ogg)$/i);
+                div.innerHTML = `
+                    <span class="font-mono text-[11px] text-[#e2e5e4] flex items-center gap-1.5">
+                        <span>${isVideo ? '📹' : '🖼️'}</span> ${displayUrl}
+                    </span>
+                    <button onclick="removeMedia(${index})" class="text-[#41544e] hover:text-red-400 font-bold px-1">×</button>
+                `;
+                container.appendChild(div);
+            });
+            compile();
+        }
+
+        const tagContainer = document.getElementById('tag-container');
+        const tagInput = document.getElementById('tag-input');
+
+        function renderTags() {
+            const lang = document.getElementById('out-lang').value;
+            const tipText = translations[lang].tooltip;
+            document.querySelectorAll('.tag-chip').forEach(el => el.remove());
+            tags.forEach((tag, index) => {
+                const span = document.createElement('span');
+                span.className = 'tag-chip';
+                span.innerHTML = `
+                    <div class="color-picker-wrapper has-tooltip">
+                        <input type="color" value="#${tag.color}" oninput="updateTagColor(${index}, this.value)">
+                        <div class="color-swatch" style="background-color: #${tag.color};"></div>
+                        <span class="tooltip-text font-mono uppercase">${tipText}</span>
+                    </div>
+                    <span class="font-bold tracking-tight text-[#e2e5e4]">${tag.name}</span> 
+                    <span class="cursor-pointer text-[#41544e] hover:text-red-400 font-bold ml-1 transition-colors text-sm" onclick="removeTag(${index})">×</span>
+                `;
+                tagContainer.insertBefore(span, tagInput);
+            });
+            compile();
+        }
+
+        tagInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ',') {
+                e.preventDefault();
+                const val = tagInput.value.trim();
+                const isExist = tags.some(t => t.name.toLowerCase() === val.toLowerCase());
+                if (val && !isExist) {
+                    tags.push({ name: val, color: generateRandomHex() });
+                    tagInput.value = '';
+                    renderTags();
+                }
+            }
+        });
+
+        function updateTagColor(index, colorHex) {
+            tags[index].color = colorHex.replace('#', '');
+            compile();
+            const chips = tagContainer.querySelectorAll('.tag-chip');
+            if(chips[index]) chips[index].querySelector('.color-swatch').style.backgroundColor = colorHex;
+        }
+
+        function removeTag(index) { tags.splice(index, 1); renderTags(); }
+
+        function compile() {
+            const lang = document.getElementById('out-lang').value;
+            const themeKey = document.getElementById('p-theme').value;
+            const name = document.getElementById('p-name').value || "Project-Name";
+            const desc = document.getElementById('p-desc').value || "Project documentation manifest.";
+            const license = document.getElementById('p-license').value;
+            const author = document.getElementById('p-author').value || "author";
+            const install = document.getElementById('p-install').value;
+            const usage = document.getElementById('p-usage').value;
+            
+            const t = translations[lang];
+            const activeTheme = themeStyles[themeKey] || themeStyles.minimalist;
+
+            let md = "";
+            if(themeKey === "minimalist" || themeKey === "monochrome") {
+                md += `# ${name}\n> ${desc}\n\n`;
+                md += `![License](https://img.shields.io/badge/license-${license}-${activeTheme.badge}?style=flat-square) `;
+                md += `![Build](https://img.shields.io/badge/build-passed-${activeTheme.build}?style=flat-square)\n\n`;
+            } else {
+                md += `<p align="center">\n  <h1 align="center">${activeTheme.prefix} ${name}</h1>\n</p>\n\n`;
+                md += `<p align="center">\n`;
+                md += `  <img src="https://img.shields.io/badge/license-${license}-${activeTheme.badge}?style=for-the-badge" />\n`;
+                md += `  <img src="https://img.shields.io/badge/build-passed-${activeTheme.build}?style=for-the-badge" />\n`;
+                md += `</p>\n\n`;
+                md += `${activeTheme.line.repeat(50)}\n\n`;
+                md += `## 📝 ${t.desc}\n${desc}\n\n`;
+            }
+
+            if (tags.length > 0) {
+                md += `## 🛠️ ${t.built}\n\n`;
+                tags.forEach(tag => {
+                    const styleType = (themeKey === "minimalist" || themeKey === "monochrome") ? "flat-square" : "for-the-badge";
+                    md += `![${tag.name}](https://img.shields.io/badge/${encodeURIComponent(tag.name)}-${tag.color}?style=${styleType}) `;
+                });
+                md += `\n\n`;
+            }
+
+            if (mediaGallery.length > 0) {
+                md += `## 🖼️ ${t.media}\n`;
+                md += `<div align="center" class="readme-slider">\n`;
+                md += `  <table style="border-collapse: collapse; border: none; margin: 0; width: auto;">\n`;
+                md += `    <tr>\n`;
+                mediaGallery.forEach(url => {
+                    const isVideo = url.match(/\.(mp4|webm|ogg)$/i);
+                    md += `      <td style="padding: 8px; border: none; vertical-align: middle;">\n`;
+                    if (isVideo) {
+                        md += `        <video src="${url}" height="240" controls muted autoplay loop style="border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.4);"></video>\n`;
+                    } else {
+                        md += `        <img src="${url}" height="240" alt="Showcase" style="border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.4);"/>\n`;
+                    }
+                    md += `      </td>\n`;
+                });
+                md += `    </tr>\n`;
+                md += `  </table>\n`;
+                md += `</div>\n\n`;
+            }
+
+            md += `## ⚙️ ${t.install}\n\`\`\`bash\n${install || "# No install required"}\n\`\`\`\n\n`;
+            md += `## 🚀 ${t.usage}\n\`\`\`bash\n${usage || "# Execute main script"}\n\`\`\`\n\n`;
+            md += `## 🤝 ${t.contrib}\nPull requests are welcome. For major changes, please open an issue first.\n\n`;
+            md += `## 📄 ${t.license}\nDistributed under the ${license} License. See \`LICENSE\` for more information.\n\n`;
+            
+            md += `${activeTheme.line.repeat(30)}\n*Generated by ${author} using JaReadme-md*`;
+
+            document.getElementById('output-raw').value = md;
+
+            let renderedContent = marked.parse(md);
+            document.getElementById('github-render').innerHTML = renderedContent;
+
+            const centerContainers = document.querySelectorAll('#github-render div');
+            centerContainers.forEach(container => {
+                if(container.querySelector('table')) {
+                    container.className = "readme-slider";
+                }
+            });
+        }
+
+        document.getElementById('tab-source').onclick = () => switchTab('source');
+        document.getElementById('tab-preview').onclick = () => switchTab('preview');
+
+        function switchTab(type) {
+            const srcBtn = document.getElementById('tab-source');
+            const preBtn = document.getElementById('tab-preview');
+            const srcView = document.getElementById('view-source');
+            const preView = document.getElementById('view-preview');
+
+            if (type === 'source') {
+                srcBtn.classList.add('active'); preBtn.classList.remove('active');
+                srcView.classList.remove('hidden'); preView.classList.add('hidden');
+            } else {
+                preBtn.classList.add('active'); srcBtn.classList.remove('active');
+                preView.classList.remove('hidden'); srcView.classList.add('hidden');
+                compile();
+            }
+        }
+
+        function copyCode() {
+            const el = document.getElementById('output-raw');
+            el.select();
+            document.execCommand('copy');
+            alert('Manifest Copied to Clipboard');
+        }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toISOString().split('T')[1].split('.')[0] + " UTC";
+        }
+
+        const liveInputs = ['p-name', 'p-desc', 'p-license', 'p-author', 'p-install', 'p-usage', 'out-lang', 'p-theme'];
+        liveInputs.forEach(id => document.getElementById(id).addEventListener('input', () => {
+            if(id === 'out-lang') renderTags(); 
+            compile();
+        }));
+        
+        document.getElementById('media-input').addEventListener('keydown', (e) => {
+            if(e.key === 'Enter') { e.preventDefault(); addNewMedia(); }
+        });
+
+        setInterval(updateClock, 1000);
+        renderTags();
+        renderMediaList();
+    </script>
+</body>
+</html>
