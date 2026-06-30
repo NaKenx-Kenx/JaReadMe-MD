@@ -176,10 +176,20 @@
                 </div>
             </div>
 
-            <div class="space-y-3">
-                <label class="block text-[10px] uppercase text-[#41544e] font-bold">Technical Procedures</label>
-                <textarea id="p-install" rows="2" placeholder="Installation commands" class="w-full input-field font-mono text-xs"></textarea>
-                <textarea id="p-usage" rows="2" placeholder="Execution commands" class="w-full input-field font-mono text-xs"></textarea>
+            <div class="space-y-4">
+                <label class="block text-[10px] uppercase text-[#41544e] font-bold border-b border-[#1c2622] pb-1">Technical Procedures</label>
+                
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] uppercase text-[#5c6e67]">Installation Commands</label>
+                    <textarea id="p-install" rows="2" placeholder="e.g. npm install" class="w-full input-field font-mono text-xs mb-1"></textarea>
+                    <input type="text" id="p-install-url" placeholder="Installation reference URL (optional)" class="w-full input-field font-mono text-xs">
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] uppercase text-[#5c6e67]">Execution / Usage Commands</label>
+                    <textarea id="p-usage" rows="2" placeholder="e.g. npm start" class="w-full input-field font-mono text-xs mb-1"></textarea>
+                    <input type="text" id="p-usage-url" placeholder="Usage documentation URL (optional)" class="w-full input-field font-mono text-xs">
+                </div>
             </div>
         </section>
 
@@ -222,12 +232,14 @@
             en: {
                 built: "Built With", install: "Installation", usage: "Usage",
                 contrib: "Contributing", license: "License", desc: "Description",
-                tooltip: "Click to change color", media: "Visual Documentation Gallery"
+                tooltip: "Click to change color", media: "Visual Documentation Gallery",
+                refLink: "Reference Link"
             },
             id: {
                 built: "Teknologi Utama", install: "Instalasi", usage: "Penggunaan",
                 contrib: "Kontribusi", license: "Lisensi", desc: "Deskripsi",
-                tooltip: "Klik untuk ubah warna", media: "Galeri Dokumentasi Visual"
+                tooltip: "Klik untuk ubah warna", media: "Galeri Dokumentasi Visual",
+                refLink: "Link Referensi"
             }
         };
 
@@ -343,7 +355,9 @@
             const license = document.getElementById('p-license').value;
             const author = document.getElementById('p-author').value || "author";
             const install = document.getElementById('p-install').value;
+            const installUrl = document.getElementById('p-install-url').value.trim();
             const usage = document.getElementById('p-usage').value;
+            const usageUrl = document.getElementById('p-usage-url').value.trim();
             
             const t = translations[lang];
             const activeTheme = themeStyles[themeKey] || themeStyles.minimalist;
@@ -392,8 +406,18 @@
                 md += `</div>\n\n`;
             }
 
-            md += `## ⚙️ ${t.install}\n\`\`\`bash\n${install || "# No install required"}\n\`\`\`\n\n`;
-            md += `## 🚀 ${t.usage}\n\`\`\`bash\n${usage || "# Execute main script"}\n\`\`\`\n\n`;
+            md += `## ⚙️ ${t.install}\n\`\`\`bash\n${install || "# No install required"}\n\`\`\`\n`;
+            if (installUrl) {
+                md += `🌐 [${t.refLink}](${installUrl})\n`;
+            }
+            md += `\n`;
+
+            md += `## 🚀 ${t.usage}\n\`\`\`bash\n${usage || "# Execute main script"}\n\`\`\`\n`;
+            if (usageUrl) {
+                md += `🌐 [${t.refLink}](${usageUrl})\n`;
+            }
+            md += `\n`;
+
             md += `## 🤝 ${t.contrib}\nPull requests are welcome. For major changes, please open an issue first.\n\n`;
             md += `## 📄 ${t.license}\nDistributed under the ${license} License. See \`LICENSE\` for more information.\n\n`;
             
@@ -420,13 +444,16 @@
             const preBtn = document.getElementById('tab-preview');
             const srcView = document.getElementById('view-source');
             const preView = document.getElementById('view-preview');
-
+        
             if (type === 'source') {
-                srcBtn.classList.add('active'); preBtn.classList.remove('active');
-                srcView.classList.remove('hidden'); preView.classList.add('hidden');
+                srcBtn.classList.add('active'); 
+                preBtn.classList.remove('active');
+                srcView.classList.remove('hidden');
             } else {
-                preBtn.classList.add('active'); srcBtn.classList.remove('active');
-                preView.classList.remove('hidden'); srcView.classList.add('hidden');
+                preBtn.classList.add('active'); 
+                srcBtn.classList.remove('active');
+                preView.classList.remove('hidden'); 
+                srcView.classList.add('hidden');
                 compile();
             }
         }
@@ -443,7 +470,11 @@
             document.getElementById('clock').innerText = now.toISOString().split('T')[1].split('.')[0] + " UTC";
         }
 
-        const liveInputs = ['p-name', 'p-desc', 'p-license', 'p-author', 'p-install', 'p-usage', 'out-lang', 'p-theme'];
+        const liveInputs = [
+            'p-name', 'p-desc', 'p-license', 'p-author', 
+            'p-install', 'p-install-url', 'p-usage', 'p-usage-url', 
+            'out-lang', 'p-theme'
+        ];
         liveInputs.forEach(id => document.getElementById(id).addEventListener('input', () => {
             if(id === 'out-lang') renderTags(); 
             compile();
