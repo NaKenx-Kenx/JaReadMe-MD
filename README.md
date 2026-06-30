@@ -15,7 +15,7 @@ No required to instal.
 ## 🚀 Usage
 
 Start Use Now in:
-(Click Here.)[NaKenx-Kenx.github.io/Jareadme-md]
+(Click Here.)[https://NaKenx-Kenx.github.io/Jareadme-md]
 
 
 ## 🤝 Contributing
