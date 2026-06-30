@@ -13,10 +13,10 @@ No required to instal.
 ```
 
 ## 🚀 Usage
-
+```bash
 Start Use Now in:
-(Click Here.)[https://NaKenx-Kenx.github.io/Jareadme-md]
-
+https://NaKenx-Kenx.github.io/Jareadme-md
+```
 
 ## 🤝 Contributing
 Pull requests are welcome. For major changes, please open an issue first.
